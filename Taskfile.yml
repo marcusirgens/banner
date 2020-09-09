@@ -1,0 +1,18 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  GREETING: Hello, World!
+
+tasks:
+  default:
+    deps: [ build ]
+  build:
+    cmds:
+      - go build -o banner ./cmd/banner
+    silent: false
+  run:
+    cmds:
+      - go run ./cmd/banner
+    silent: true
