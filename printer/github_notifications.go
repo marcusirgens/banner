@@ -13,7 +13,10 @@ import (
 
 func PrintEvents(ctx context.Context, accesstoken string) {
 	bannerShown := false
-	for notification := range getNotifications(ctx, accesstoken, oneDayAgo()) {
+
+	roundedTime := roundTime(oneDayAgo())
+
+	for notification := range getNotifications(ctx, accesstoken, roundedTime) {
 		if !bannerShown {
 			fmt.Fprintln(os.Stdout, "Github notifications:")
 			bannerShown = true
@@ -23,6 +26,14 @@ func PrintEvents(ctx context.Context, accesstoken string) {
 	if bannerShown {
 		fmt.Fprintln(os.Stdout, "")
 	}
+}
+
+func roundTime(then time.Time) time.Time {
+	sec := time.Second * time.Duration(then.Second())
+	min := time.Minute * (time.Duration(then.Minute()) % 5)
+
+	diff := sec + min
+	return then.Add(-diff)
 }
 
 func printNotification(notification *gh.Notification) {
